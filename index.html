@@ -35,7 +35,15 @@ input,select{width:100%;padding:12px;border:1px solid #ddd;border-radius:12px;fo
 <div id="authScreen" style="position:fixed;inset:0;background:#0b0b0c;color:#fff;z-index:100;padding:55px 22px;font-family:-apple-system,BlinkMacSystemFont,sans-serif">
 <div style="max-width:430px;margin:auto">
 <h1 style="font-size:38px;margin-bottom:5px">FuelTrack</h1><p style="color:#aaa">Free nutrition tracking for your training.</p>
-<div style="background:#fff;color:#111;border-radius:22px;padding:18px;margin-top:25px">
+<div id="setupBox" style="display:none;background:#fff;color:#111;border-radius:22px;padding:18px;margin-top:25px">
+<h2>Connect Supabase</h2>
+<p style="font-size:13px;color:#666;margin:6px 0 8px">Paste your Project URL and Publishable key from Supabase → Project Settings → API. Saved on this device only. Never use a secret key.</p>
+<input id="sbUrl" type="url" autocapitalize="off" autocorrect="off" placeholder="https://xxxx.supabase.co" style="width:100%;padding:13px;margin:5px 0;border:1px solid #ddd;border-radius:13px">
+<input id="sbKey" type="text" autocapitalize="off" autocorrect="off" placeholder="sb_publishable_..." style="width:100%;padding:13px;margin:5px 0;border:1px solid #ddd;border-radius:13px">
+<div id="setupErr" style="color:#b00020;font-size:13px;min-height:18px"></div>
+<button onclick="connectSupabase()" style="width:100%;padding:13px;border:0;border-radius:13px;background:#111;color:#fff;font-weight:800">Connect</button>
+</div>
+<div id="signinBox" style="background:#fff;color:#111;border-radius:22px;padding:18px;margin-top:25px">
 <h2 id="authTitle">Sign in</h2>
 <input id="authEmail" type="email" placeholder="Email" style="width:100%;padding:13px;margin:5px 0;border:1px solid #ddd;border-radius:13px">
 <input id="authName" type="text" placeholder="Display name (optional)" style="display:none;width:100%;padding:13px;margin:5px 0;border:1px solid #ddd;border-radius:13px">
@@ -44,7 +52,7 @@ input,select{width:100%;padding:12px;border:1px solid #ddd;border-radius:12px;fo
 <button id="authGo" onclick="submitAuth()" style="width:100%;padding:13px;border:0;border-radius:13px;background:#111;color:#fff;font-weight:800">Sign in</button>
 <button id="authSwitch" onclick="toggleAuthMode()" style="width:100%;padding:12px;border:0;background:none;color:#666">Create an account</button>
 </div>
-<p style="font-size:12px;color:#888;margin-top:14px">Your account is securely handled by Supabase. Your food log is saved per account on this device; cloud sync comes next.</p>
+<p style="font-size:12px;color:#888;margin-top:14px">Your account is securely handled by Supabase. Your food log is saved per account on this device; cloud sync comes next. <a href="#" onclick="resetConnection();return false" style="color:#aaa">Change Supabase project</a></p>
 </div></div>
 
 <header><h1>FuelTrack</h1><div class="sub">Simple nutrition tracking — no subscription</div></header>
@@ -99,7 +107,6 @@ input,select{width:100%;padding:12px;border:1px solid #ddd;border-radius:12px;fo
 </main>
 <nav class="tabs"><button id="t1" class="active" onclick="tab('today')">Today</button><button id="t2" onclick="tab('add')">Add Food</button><button id="t3" onclick="tab('settings')">Settings</button><button id="t4" onclick="tab('profile')"><span class="ico">●</span>Profile</button></nav>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js"></script>
 <script>
 const starter=[
 ["Chicken breast, cooked",284,53,0,6],["White rice, cooked (1 cup)",205,4,45,0],["Egg, large",72,6,0.4,5],["Oatmeal, cooked (1 cup)",166,6,28,3.6],
@@ -203,12 +210,24 @@ function showAuth(){
 }
 async function signOut(){if(window.sb)await sb.auth.signOut();showAuth()}
 
+function showSetup(msg){$("authScreen").style.display="block";$("setupBox").style.display="block";$("signinBox").style.display="none";$("setupErr").textContent=msg||""}
+function connectSupabase(){
+  const url=$("sbUrl").value.trim().replace(/\/+$/,""), key=$("sbKey").value.trim();
+  if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(url)){$("setupErr").textContent="URL should look like https://abcdxyz.supabase.co";return}
+  if(key.startsWith("sb_secret_")||key.length<20){$("setupErr").textContent="Use the Publishable (or anon) key, not a secret key.";return}
+  localStorage.setItem("fueltrack_sb",JSON.stringify({url,key}));location.reload();
+}
+function resetConnection(){
+  if(!confirm("Disconnect from this Supabase project?"))return;
+  localStorage.removeItem("fueltrack_sb");
+  Promise.resolve(window.sb?sb.auth.signOut():0).catch(()=>{}).finally(()=>location.reload());
+}
 async function initAuth(){
-  if(!window.sb){
-    $("authScreen").style.display="block";
-    setAuthError(window.supabase?"Supabase keys not set yet. Edit supabase-config.js.":"Supabase could not load. Check your connection.");
-    return;
-  }
+  if(!window.supabase){showSetup("Couldn't load the Supabase library. Check your connection.");return}
+  let cfg=null;try{cfg=JSON.parse(localStorage.getItem("fueltrack_sb")||"null")}catch(e){}
+  if(cfg&&cfg.url&&cfg.key){try{window.sb=window.supabase.createClient(cfg.url,cfg.key)}catch(e){console.error(e)}}
+  if(!window.sb){showSetup("");return}
+  $("setupBox").style.display="none";$("signinBox").style.display="block";
   const {data,error}=await sb.auth.getSession();
   if(error)console.error(error);
   if(data&&data.session) await finishLogin(data.session.user); else showAuth();
