@@ -1,248 +1,185 @@
 <!doctype html>
-<html lang="en">
-<head>
+<html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#111111">
+<meta name="theme-color" content="#0f172a">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="FuelTrack">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2310b981'/%3E%3Cpath d='M36 10 18 36h12l-4 18 20-28H33z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%2310b981'/%3E%3Cpath d='M36 10 18 36h12l-4 18 20-28H33z' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="manifest" href="manifest.json">
 <title>FuelTrack</title>
 <style>
-:root{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",sans-serif;background:#f4f4f5;color:#171717}
-*{box-sizing:border-box}body{margin:0;padding-bottom:90px}
-header{background:#111;color:white;padding:calc(env(safe-area-inset-top) + 18px) 18px 18px;position:sticky;top:0;z-index:3}
-h1,h2,h3,p{margin:0}.sub{color:#aaa;font-size:13px;margin-top:4px}
-main{max-width:720px;margin:auto;padding:16px}
-.card{background:white;border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 1px 5px #0000000d}
-.cal{display:flex;justify-content:space-between;align-items:center}
-.big{font-size:34px;font-weight:800}.muted{color:#777}
-.bar{height:9px;background:#e9e9eb;border-radius:99px;overflow:hidden;margin-top:10px}.fill{height:100%;background:#111;border-radius:99px}
-.macros{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.macro{background:#f5f5f5;border-radius:13px;padding:10px;text-align:center}.macro b{display:block;font-size:18px}
-.meal{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #eee}.meal:last-child{border:0}
-button{border:0;border-radius:12px;padding:10px 14px;background:#111;color:#fff;font-weight:700;font-size:14px}button.secondary{background:#eee;color:#111}
-.foodrow{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid #eee}.foodrow small{color:#777;display:block}
-input,select{width:100%;padding:12px;border:1px solid #ddd;border-radius:12px;font-size:16px;background:white;margin:6px 0 10px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.tabs{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ddd;display:flex;justify-content:center;gap:8px;padding:10px calc(10px + env(safe-area-inset-left)) calc(10px + env(safe-area-inset-bottom));z-index:4}
-.tabs button{flex:1;max-width:180px;background:white;color:#555}.tabs button.active{background:#111;color:white}
-.hidden{display:none}.empty{text-align:center;padding:25px;color:#777}
-.danger{color:#b00020}.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}
-</style>
-</head>
-<body>
-<div id="authScreen" style="position:fixed;inset:0;background:#0b0b0c;color:#fff;z-index:100;padding:55px 22px;font-family:-apple-system,BlinkMacSystemFont,sans-serif">
-<div style="max-width:430px;margin:auto">
-<h1 style="font-size:38px;margin-bottom:5px">FuelTrack</h1><p style="color:#aaa">Free nutrition tracking for your training.</p>
-<div id="setupBox" style="display:none;background:#fff;color:#111;border-radius:22px;padding:18px;margin-top:25px">
-<h2>Connect Supabase</h2>
-<p style="font-size:13px;color:#666;margin:6px 0 8px">Paste your Project URL and Publishable key from Supabase → Project Settings → API. Saved on this device only. Never use a secret key.</p>
-<input id="sbUrl" type="url" autocapitalize="off" autocorrect="off" placeholder="https://xxxx.supabase.co" style="width:100%;padding:13px;margin:5px 0;border:1px solid #ddd;border-radius:13px">
-<input id="sbKey" type="text" autocapitalize="off" autocorrect="off" placeholder="sb_publishable_..." style="width:100%;padding:13px;margin:5px 0;border:1px solid #ddd;border-radius:13px">
-<div id="setupErr" style="color:#b00020;font-size:13px;min-height:18px"></div>
-<button onclick="connectSupabase()" style="width:100%;padding:13px;border:0;border-radius:13px;background:#111;color:#fff;font-weight:800">Connect</button>
-</div>
-<div id="signinBox" style="background:#fff;color:#111;border-radius:22px;padding:18px;margin-top:25px">
-<h2 id="authTitle">Sign in</h2>
-<input id="authEmail" type="email" placeholder="Email" style="width:100%;padding:13px;margin:5px 0;border:1px solid #ddd;border-radius:13px">
-<input id="authName" type="text" placeholder="Display name (optional)" style="display:none;width:100%;padding:13px;margin:5px 0;border:1px solid #ddd;border-radius:13px">
-<input id="authPw" type="password" placeholder="Password" style="width:100%;padding:13px;margin:5px 0;border:1px solid #ddd;border-radius:13px">
+:root{--bg:#f3f5f7;--card:#fff;--tx:#0f172a;--mu:#64748b;--ln:#e5e9ee;--ac:#10b981;--dk:#0f172a;--p:#3b82f6;--c:#f59e0b;--f:#ef4444;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif}
+@media(prefers-color-scheme:dark){:root{--bg:#0b1120;--card:#162033;--tx:#f1f5f9;--mu:#94a3b8;--ln:#26324a}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);padding-bottom:96px}
+h1,h2,h3,p{margin:0}.mu{color:var(--mu)}.hidden{display:none!important}
+header{background:var(--dk);color:#fff;padding:calc(env(safe-area-inset-top) + 12px) 16px 12px;position:sticky;top:0;z-index:3}
+.hd{max-width:720px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:19px}.brand svg{width:32px;height:32px}
+.dnav{display:flex;align-items:center;gap:4px}.dnav button{background:#ffffff1f;color:#fff;padding:7px 12px}.dnav span{min-width:84px;text-align:center;font-weight:700;font-size:14px}
+main{max-width:720px;margin:auto;padding:14px}
+.card{background:var(--card);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:0 1px 6px #0000000f}
+button{border:0;border-radius:12px;padding:10px 14px;background:var(--ac);color:#fff;font-weight:700;font-size:14px;font-family:inherit}
+button.sec{background:var(--bg);color:var(--tx)}button.sm{padding:6px 11px;font-size:13px}
+input,select{width:100%;padding:12px;border:1px solid var(--ln);border-radius:12px;font-size:16px;background:var(--card);color:var(--tx);margin:5px 0;font-family:inherit}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{font-size:13px;color:var(--mu)}
+.ringrow{display:flex;align-items:center;gap:16px}.ring{position:relative;width:132px;height:132px;flex:none}.ring svg{transform:rotate(-90deg)}
+.ring .mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}.ring b{font-size:26px}
+.eq{flex:1;font-size:14px}.eq div{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--ln)}.eq div:last-child{border:0}
+.mac{margin-top:14px}.mac .r{display:flex;justify-content:space-between;font-size:13px;margin:9px 0 4px}
+.bar{height:8px;background:var(--ln);border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;border-radius:9px}
+.mealh{display:flex;justify-content:space-between;align-items:center;padding:6px 0}
+.fr{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--ln)}.fr small{display:block;color:var(--mu);margin-top:2px}
+.water{display:flex;align-items:center;justify-content:space-between}.drops{font-size:18px;margin-top:4px}
+.tabs{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--ln);display:flex;padding:6px 8px calc(6px + env(safe-area-inset-bottom));z-index:4}
+.tabs button{flex:1;background:none;color:var(--mu);padding:6px 0;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px}.tabs button span{font-size:21px}.tabs button.on{color:var(--ac)}
+.empty{text-align:center;padding:20px;color:var(--mu)}.bars{display:flex;align-items:flex-end;gap:8px;height:130px;margin-top:10px}.bars div{flex:1;text-align:center;font-size:11px;color:var(--mu)}.bars i{display:block;background:var(--ac);border-radius:6px 6px 0 0;margin-bottom:4px}
+details summary{font-weight:700;cursor:pointer}
+#authScreen{position:fixed;inset:0;background:var(--dk);color:#fff;z-index:100;padding:60px 22px;overflow:auto}
+.auth{max-width:430px;margin:auto}.auth .box{background:#fff;color:#0f172a;border-radius:22px;padding:18px;margin-top:24px}.auth input{background:#fff;color:#0f172a;border-color:#ddd}
+</style></head><body>
+<svg style="display:none"><symbol id="logo" viewBox="0 0 64 64"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#059669"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#lg)"/><path d="M36 10 18 36h12l-4 18 20-28H33z" fill="#fff"/></symbol></svg>
+
+<div id="authScreen"><div class="auth">
+<svg width="72" height="72"><use href="#logo"/></svg>
+<h1 style="font-size:38px;margin:12px 0 4px">FuelTrack</h1><p style="color:#94a3b8">Track food. Hit your macros. Fuel your training.</p>
+<div class="box"><h2 id="authTitle">Sign in</h2>
+<input id="authEmail" type="email" placeholder="Email">
+<input id="authName" type="text" placeholder="Display name (optional)" style="display:none">
+<input id="authPw" type="password" placeholder="Password">
 <div id="authErr" style="color:#b00020;font-size:13px;min-height:18px"></div>
-<button id="authGo" onclick="submitAuth()" style="width:100%;padding:13px;border:0;border-radius:13px;background:#111;color:#fff;font-weight:800">Sign in</button>
-<button id="authSwitch" onclick="toggleAuthMode()" style="width:100%;padding:12px;border:0;background:none;color:#666">Create an account</button>
-</div>
-<p style="font-size:12px;color:#888;margin-top:14px">Your account is securely handled by Supabase. Your food log is saved per account on this device; cloud sync comes next. <a href="#" onclick="resetConnection();return false" style="color:#aaa">Change Supabase project</a></p>
+<button id="authGo" onclick="submitAuth()" style="width:100%;padding:13px">Sign in</button>
+<button id="authSwitch" onclick="toggleAuthMode()" style="width:100%;background:none;color:#666">Create an account</button></div>
 </div></div>
 
-<header><h1>FuelTrack</h1><div class="sub">Simple nutrition tracking — no subscription</div></header>
+<header><div class="hd"><div class="brand"><svg><use href="#logo"/></svg>FuelTrack</div>
+<div class="dnav"><button onclick="shiftDay(-1)">‹</button><span id="dayLbl">Today</span><button onclick="shiftDay(1)">›</button></div></div></header>
 <main>
-<section id="today">
-<div class="card">
-<div class="cal"><div><div class="muted">Calories</div><div><span id="calNow" class="big">0</span> <span class="muted">/ <span id="calGoal">2500</span></span></div></div><button onclick="openAdd()">+ Add food</button></div>
-<div class="bar"><div id="calBar" class="fill" style="width:0%"></div></div>
-<div class="macros">
-<div class="macro"><span class="muted">Protein</span><b id="pNow">0g</b><small>/ <span id="pGoal">160</span>g</small></div>
-<div class="macro"><span class="muted">Carbs</span><b id="cNow">0g</b><small>/ <span id="cGoal">300</span>g</small></div>
-<div class="macro"><span class="muted">Fat</span><b id="fNow">0g</b><small>/ <span id="fGoal">80</span>g</small></div>
-</div>
-</div>
-<div class="card"><h2>Meals</h2><div id="meals"></div></div>
+<section id="diary">
+<div class="card"><div class="ringrow"><div class="ring"><svg width="132" height="132"><circle cx="66" cy="66" r="56" fill="none" stroke="var(--ln)" stroke-width="12"/><circle id="ringC" cx="66" cy="66" r="56" fill="none" stroke="var(--ac)" stroke-width="12" stroke-linecap="round" stroke-dasharray="351.9" stroke-dashoffset="351.9"/></svg><div class="mid"><b id="remN">0</b><small class="mu" id="remL">remaining</small></div></div>
+<div class="eq"><div><span class="mu">Goal</span><b id="eqG">0</b></div><div><span class="mu">Food</span><b id="eqF">0</b></div><div><span class="mu">Remaining</span><b id="eqR">0</b></div></div></div>
+<div class="mac" id="macros"></div></div>
+<div class="card water"><div><b>Water</b><div class="drops" id="drops"></div></div><div><button class="sec sm" onclick="water(-1)">−</button> <button class="sm" onclick="water(1)">+ Glass</button></div></div>
+<div class="card" id="meals"></div>
 </section>
 
 <section id="add" class="hidden">
-<div class="card"><h2>Add food</h2><p class="muted" style="margin:6px 0 12px">Choose a meal and search your saved starter foods, or enter your own food.</p>
-<select id="mealSelect"><option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Snacks</option></select>
-<input id="search" placeholder="Search foods..." oninput="renderFoods()">
-<div id="foodResults"></div>
-</div>
-<div class="card"><h3>Custom food</h3>
-<input id="cfName" placeholder="Food name">
-<div class="grid"><input id="cfCal" type="number" placeholder="Calories"><input id="cfP" type="number" placeholder="Protein (g)"></div>
-<div class="grid"><input id="cfC" type="number" placeholder="Carbs (g)"><input id="cfF" type="number" placeholder="Fat (g)"></div>
-<button onclick="addCustom()">Save & add</button>
-</div>
+<div class="card"><h2>Add food</h2>
+<div class="grid"><label>Meal<select id="mealSel"><option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Snacks</option></select></label><label>Servings<input id="qty" type="number" value="1" min="0.25" step="0.25"></label></div>
+<input id="search" placeholder="Search foods…" oninput="renderFoods()">
+<div id="foodRes"></div>
+<button class="sec" style="width:100%;margin-top:8px" onclick="searchOnline()">🌐 Search online database</button><div id="online"></div></div>
+<div class="card"><details><summary>⚡ Quick add calories</summary>
+<input id="qaName" placeholder="Label (optional)"><div class="grid"><input id="qaCal" type="number" placeholder="Calories"><input id="qaP" type="number" placeholder="Protein g"></div>
+<button onclick="quickAdd()">Add</button></details></div>
+<div class="card"><details><summary>＋ Create custom food</summary>
+<input id="cfName" placeholder="Food name"><div class="grid"><input id="cfCal" type="number" placeholder="Calories"><input id="cfP" type="number" placeholder="Protein g"><input id="cfC" type="number" placeholder="Carbs g"><input id="cfF" type="number" placeholder="Fat g"></div>
+<button onclick="addCustom()">Save &amp; add</button></details></div>
 </section>
 
-<section id="settings" class="hidden">
-<div class="card"><h2>Daily targets</h2>
-<div class="grid"><label>Calories<input id="gCal" type="number"></label><label>Protein (g)<input id="gP" type="number"></label></div>
-<div class="grid"><label>Carbs (g)<input id="gC" type="number"></label><label>Fat (g)<input id="gF" type="number"></label></div>
-<button onclick="saveGoals()">Save targets</button>
-</div>
-<div class="card"><h2>Data</h2><p class="muted" style="margin:6px 0 12px">Your entries are stored locally on this device.</p><button class="secondary" onclick="exportData()">Export backup</button> <button class="secondary" onclick="clearToday()">Clear today</button></div>
+<section id="progress" class="hidden">
+<div class="card"><h2>Last 7 days</h2><div class="bars" id="wk"></div></div>
+<div class="card"><h2>Weight</h2><div class="grid"><input id="wIn" type="number" step="0.1" placeholder="Today's weight"><button onclick="logWeight()" style="margin:5px 0">Log</button></div><div id="wChart"></div></div>
 </section>
 
 <section id="profile" class="hidden">
-<div class="card"><h2>Profile</h2><p id="profileUser" class="muted"></p><button class="secondary" onclick="signOut()">Sign out</button></div>
-<div class="card"><h2>Macro reference options</h2>
-<p class="muted">Bigger Leaner Stronger publishes different macro distributions for phases such as lean bulking and maintenance. These are shown here as educational references, not personalized targets.</p>
-<div id="presetList"></div>
-</div>
-<div class="card"><h2>Daily targets</h2>
-<div class="grid"><label>Calories<input id="pgCal" type="number"></label><label>Protein (g)<input id="pgP" type="number"></label></div>
-<div class="grid"><label>Carbs (g)<input id="pgC" type="number"></label><label>Fat (g)<input id="pgF" type="number"></label></div>
-<button class="primary" onclick="saveProfileGoals()">Save</button>
-</div></section>
+<div class="card"><h2>Account</h2><p id="who" class="mu" style="margin:6px 0 12px"></p><button class="sec" onclick="signOut()">Sign out</button></div>
+<div class="card"><h2>Daily targets</h2><div class="grid"><label>Calories<input id="gCal" type="number"></label><label>Protein g<input id="gP" type="number"></label><label>Carbs g<input id="gC" type="number"></label><label>Fat g<input id="gF" type="number"></label></div>
+<button onclick="saveGoals()">Save targets</button>
+<p class="mu" style="margin:14px 0 6px;font-size:13px">Macro split reference (uses the calories above)</p>
+<button class="sec sm" onclick="applySplit(.25,.55,.20)">Lean bulk 25/55/20</button> <button class="sec sm" onclick="applySplit(.30,.45,.25)">Maintain 30/45/25</button></div>
+<div class="card"><h2>Data</h2><p class="mu" style="margin:6px 0 12px;font-size:13px">Entries are stored on this device, per account.</p><button class="sec" onclick="exportData()">Export backup</button> <button class="sec" onclick="clearDay()">Clear this day</button></div>
+</section>
 </main>
-<nav class="tabs"><button id="t1" class="active" onclick="tab('today')">Today</button><button id="t2" onclick="tab('add')">Add Food</button><button id="t3" onclick="tab('settings')">Settings</button><button id="t4" onclick="tab('profile')"><span class="ico">●</span>Profile</button></nav>
+<nav class="tabs"><button id="t_diary" class="on" onclick="tab('diary')"><span>📖</span>Diary</button><button id="t_add" onclick="tab('add')"><span>➕</span>Add</button><button id="t_progress" onclick="tab('progress')"><span>📈</span>Progress</button><button id="t_profile" onclick="tab('profile')"><span>👤</span>Profile</button></nav>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const starter=[
-["Chicken breast, cooked",284,53,0,6],["White rice, cooked (1 cup)",205,4,45,0],["Egg, large",72,6,0.4,5],["Oatmeal, cooked (1 cup)",166,6,28,3.6],
-["Banana, medium",105,1.3,27,0.4],["Apple, medium",95,0.5,25,0.3],["Greek yogurt, plain (1 cup)",130,23,9,0],["Whole milk (1 cup)",149,8,12,8],
-["Peanut butter (2 tbsp)",190,7,7,16],["Whey protein powder (1 scoop)",120,24,3,2],["Ground beef 90% lean, cooked (4 oz)",200,26,0,10],["Salmon, cooked (4 oz)",233,25,0,14],
-["Pasta, cooked (1 cup)",221,8,43,1.3],["Bread, whole wheat (2 slices)",200,8,36,3],["Avocado (1/2)",120,1.5,6,11],["Broccoli, cooked (1 cup)",55,4,11,0.6]
-];
-const defaultState=()=>({goals:{cal:2500,p:160,c:300,f:80},entries:[],custom:[]});
-let state=defaultState(), storeKey=null;
-const today=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-function save(){if(storeKey)localStorage.setItem(storeKey,JSON.stringify(state))}
-function entries(){return state.entries.filter(x=>x.date===today())}
-function totals(){return entries().reduce((a,x)=>({cal:a.cal+x.cal,p:a.p+x.p,c:a.c+x.c,f:a.f+x.f}),{cal:0,p:0,c:0,f:0})}
-function render(){
-let t=totals(),g=state.goals;
-calNow.textContent=Math.round(t.cal);calGoal.textContent=g.cal;pNow.textContent=Math.round(t.p)+"g";pGoal.textContent=g.p;cNow.textContent=Math.round(t.c)+"g";cGoal.textContent=g.c;fNow.textContent=Math.round(t.f)+"g";fGoal.textContent=g.f;
-calBar.style.width=Math.min(100,t.cal/g.cal*100)+"%";
-let out="";["Breakfast","Lunch","Dinner","Snacks"].forEach(m=>{let es=entries().filter(x=>x.meal===m), sum=es.reduce((a,x)=>a+x.cal,0);out+=`<div class="meal"><div><b>${m}</b><div class="muted">${sum} calories</div></div><button class="secondary" onclick="openAdd('${m}')">+ Add</button></div>`;if(es.length) es.forEach((x,i)=>out+=`<div class="foodrow"><div>${esc(x.name)}<small>${x.cal} cal · P ${x.p}g · C ${x.c}g · F ${x.f}g</small></div><button class="secondary" onclick="delEntry(${state.entries.indexOf(x)})">×</button></div>`)});meals.innerHTML=out;
-}
-let shownFoods=[];
-function renderFoods(){let q=search.value.toLowerCase();shownFoods=starter.concat(state.custom.map(x=>[x.name,x.cal,x.p,x.c,x.f])).filter(x=>x[0].toLowerCase().includes(q));foodResults.innerHTML=shownFoods.map((x,i)=>`<div class="foodrow"><div><b>${esc(x[0])}</b><small>${x[1]} cal · P ${x[2]}g · C ${x[3]}g · F ${x[4]}g</small></div><button onclick="addFood(shownFoods[${i}])">Add</button></div>`).join("")||'<div class="empty">No food found. Add it as a custom food below.</div>'}
-function addFood(x){let meal=mealSelect.value;state.entries.push({date:today(),meal,name:x[0],cal:+x[1],p:+x[2],c:+x[3],f:+x[4]});save();render();tab("today")}
-function addCustom(){let n=cfName.value.trim();if(!n)return;let x={name:n,cal:+cfCal.value||0,p:+cfP.value||0,c:+cfC.value||0,f:+cfF.value||0};state.custom.push(x);save();addFood([x.name,x.cal,x.p,x.c,x.f]);}
-function delEntry(i){state.entries.splice(i,1);save();render()}
-function openAdd(meal){if(meal)mealSelect.value=meal;search.value="";tab("add");renderFoods()}
-function tab(id){["today","add","settings","profile"].forEach(x=>document.getElementById(x).classList.toggle("hidden",x!==id));document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));({today:t1,add:t2,settings:t3,profile:t4})[id].classList.add("active");if(id==="settings"){gCal.value=state.goals.cal;gP.value=state.goals.p;gC.value=state.goals.c;gF.value=state.goals.f}}
-function saveGoals(){state.goals={cal:+gCal.value||2500,p:+gP.value||160,c:+gC.value||300,f:+gF.value||80};save();render();tab("today")}
-function exportData(){let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:"application/json"}));a.download="fueltrack-backup.json";a.click()}
-function clearToday(){if(confirm("Clear today's food entries?")){state.entries=state.entries.filter(x=>x.date!==today());save();render()}}
-render();
-
-let FTUser=null, FTAuthMode="signin";
 const $=id=>document.getElementById(id);
-function setAuthError(m){$("authErr").textContent=m||""}
-
-function toggleAuthMode(){
-  FTAuthMode=FTAuthMode==="signin"?"signup":"signin";
-  const su=FTAuthMode==="signup";
-  $("authTitle").textContent=su?"Create an account":"Sign in";
-  $("authGo").textContent=su?"Sign up":"Sign in";
-  $("authSwitch").textContent=su?"I already have an account":"Create an account";
-  $("authName").style.display=su?"block":"none";
-  setAuthError("");
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const ymd=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const todayS=()=>ymd(new Date());
+const SB_URL="https://dndbksrutrzjgqartxmd.supabase.co",SB_KEY="sb_publishable_9QBT90TVDDy9lPeZRTkSVg_cGBejrhk";
+const starter=[["Chicken breast, cooked (4 oz)",187,35,0,4],["White rice, cooked (1 cup)",205,4,45,0.4],["Egg, large",72,6,0.4,5],["Oatmeal, cooked (1 cup)",166,6,28,3.6],["Banana, medium",105,1.3,27,0.4],["Apple, medium",95,0.5,25,0.3],["Greek yogurt, plain (1 cup)",130,23,9,0],["Whole milk (1 cup)",149,8,12,8],["Peanut butter (2 tbsp)",190,7,7,16],["Whey protein (1 scoop)",120,24,3,2],["Ground beef 90% lean (4 oz)",200,26,0,10],["Salmon, cooked (4 oz)",233,25,0,14],["Pasta, cooked (1 cup)",221,8,43,1.3],["Whole wheat bread (2 slices)",200,8,36,3],["Avocado (1/2)",120,1.5,6,11],["Broccoli, cooked (1 cup)",55,4,11,0.6]];
+const defState=()=>({goals:{cal:2500,p:160,c:300,f:80},entries:[],custom:[],water:{},weights:[]});
+let state=defState(),storeKey=null,cur=todayS(),FTUser=null,FTMode="signin",shown=[],onl=[];
+function save(){if(storeKey)localStorage.setItem(storeKey,JSON.stringify(state))}
+const dayEntries=d=>state.entries.filter(x=>x.date===d);
+const sum=es=>es.reduce((a,x)=>({cal:a.cal+x.cal,p:a.p+x.p,c:a.c+x.c,f:a.f+x.f}),{cal:0,p:0,c:0,f:0});
+function shiftDay(n){const d=new Date(cur+"T12:00:00");d.setDate(d.getDate()+n);cur=ymd(d);render()}
+function render(){
+ const t=sum(dayEntries(cur)),g=state.goals,rem=Math.round(g.cal-t.cal);
+ $("dayLbl").textContent=cur===todayS()?"Today":new Date(cur+"T12:00:00").toLocaleDateString(undefined,{month:"short",day:"numeric"});
+ $("remN").textContent=Math.abs(rem);$("remL").textContent=rem<0?"over":"remaining";
+ $("eqG").textContent=g.cal;$("eqF").textContent=Math.round(t.cal);$("eqR").textContent=rem;
+ $("ringC").style.strokeDashoffset=351.9*(1-Math.min(1,t.cal/g.cal));$("ringC").style.stroke=rem<0?"var(--f)":"var(--ac)";
+ $("macros").innerHTML=[["Protein",t.p,g.p,"--p"],["Carbs",t.c,g.c,"--c"],["Fat",t.f,g.f,"--f"]].map(m=>`<div class="r"><b>${m[0]}</b><span class="mu">${Math.round(m[1])} / ${m[2]} g</span></div><div class="bar"><i style="width:${Math.min(100,m[1]/m[2]*100)}%;background:var(${m[3]})"></i></div>`).join("");
+ const w=state.water[cur]||0;$("drops").textContent=(w?"💧".repeat(Math.min(w,12))+" ":"")+w+" / 8 glasses";
+ $("meals").innerHTML=["Breakfast","Lunch","Dinner","Snacks"].map(m=>{const es=dayEntries(cur).filter(x=>x.meal===m);return `<div class="mealh"><div><h3>${m}</h3><small class="mu">${Math.round(sum(es).cal)} cal</small></div><button class="sm" onclick="openAdd('${m}')">+ Add</button></div>`+es.map(x=>`<div class="fr"><div>${esc(x.name)}<small>${Math.round(x.cal)} cal · P ${Math.round(x.p)} · C ${Math.round(x.c)} · F ${Math.round(x.f)}</small></div><button class="sec sm" onclick="delEntry(${x.id})">✕</button></div>`).join("")}).join("");
 }
+function tab(id){["diary","add","progress","profile"].forEach(x=>{$(x).classList.toggle("hidden",x!==id);$("t_"+x).classList.toggle("on",x===id)});
+ if(id==="profile"){gCal.value=state.goals.cal;gP.value=state.goals.p;gC.value=state.goals.c;gF.value=state.goals.f}
+ if(id==="progress")renderProgress();window.scrollTo(0,0)}
+function openAdd(m){if(m)mealSel.value=m;search.value="";online.innerHTML="";tab("add");renderFoods()}
+function recents(){const seen={},out=[];for(let i=state.entries.length-1;i>=0&&out.length<6;i--){const x=state.entries[i];if(!seen[x.base]){seen[x.base]=1;out.push([x.base,x.bcal,x.bp,x.bc,x.bf])}}return out}
+function renderFoods(){const q=search.value.toLowerCase();
+ const all=(q?[]:recents()).concat(starter,state.custom.map(x=>[x.name,x.cal,x.p,x.c,x.f])),seen={};
+ shown=all.filter(x=>x[0].toLowerCase().includes(q)&&!seen[x[0]]&&(seen[x[0]]=1));
+ foodRes.innerHTML=(q?"":"<small class='mu'>Recent &amp; common</small>")+(shown.map((x,i)=>`<div class="fr"><div><b>${esc(x[0])}</b><small>${x[1]} cal · P ${x[2]} · C ${x[3]} · F ${x[4]}</small></div><button class="sm" onclick="addFood(shown[${i}])">Add</button></div>`).join("")||'<div class="empty">Nothing found. Try the online search.</div>')}
+function addFood(x){const q=+qty.value||1;state.entries.push({id:Math.floor(Date.now()+Math.random()*1000),date:cur,meal:mealSel.value,name:x[0]+(q!==1?" ×"+q:""),base:x[0],bcal:+x[1],bp:+x[2],bc:+x[3],bf:+x[4],cal:x[1]*q,p:x[2]*q,c:x[3]*q,f:x[4]*q});save();qty.value=1;render();tab("diary")}
+function quickAdd(){const cal=+qaCal.value;if(!cal)return;addFood([qaName.value.trim()||"Quick add",cal,+qaP.value||0,0,0]);qaCal.value=qaName.value=qaP.value=""}
+function addCustom(){const n=cfName.value.trim();if(!n)return;const x={name:n,cal:+cfCal.value||0,p:+cfP.value||0,c:+cfC.value||0,f:+cfF.value||0};state.custom.push(x);addFood([x.name,x.cal,x.p,x.c,x.f]);cfName.value=cfCal.value=cfP.value=cfC.value=cfF.value=""}
+async function searchOnline(){const q=search.value.trim();if(!q){online.innerHTML='<div class="empty">Type a food name above first.</div>';return}
+ online.innerHTML='<div class="empty">Searching…</div>';
+ try{const r=await fetch("https://world.openfoodfacts.org/cgi/search.pl?search_terms="+encodeURIComponent(q)+"&search_simple=1&action=process&json=1&page_size=15&fields=product_name,brands,nutriments");const j=await r.json();
+ onl=(j.products||[]).filter(p=>p.product_name&&p.nutriments&&p.nutriments["energy-kcal_100g"]!=null).map(p=>[p.product_name+(p.brands?" – "+p.brands.split(",")[0]:"")+" (100 g)",Math.round(p.nutriments["energy-kcal_100g"]),+(p.nutriments.proteins_100g||0).toFixed(1),+(p.nutriments.carbohydrates_100g||0).toFixed(1),+(p.nutriments.fat_100g||0).toFixed(1)]);
+ online.innerHTML=onl.map((x,i)=>`<div class="fr"><div><b>${esc(x[0])}</b><small>${x[1]} cal · P ${x[2]} · C ${x[3]} · F ${x[4]}</small></div><button class="sm" onclick="addFood(onl[${i}])">Add</button></div>`).join("")||'<div class="empty">No online results.</div>'}
+ catch(e){online.innerHTML='<div class="empty">Online search unavailable right now.</div>'}}
+function delEntry(id){state.entries=state.entries.filter(x=>x.id!==id);save();render()}
+function water(n){state.water[cur]=Math.max(0,(state.water[cur]||0)+n);save();render()}
+function logWeight(){const v=+wIn.value;if(!v)return;state.weights=state.weights.filter(x=>x.date!==cur).concat({date:cur,w:v}).sort((a,b)=>a.date<b.date?-1:1);wIn.value="";save();renderProgress()}
+function renderProgress(){
+ const days=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push(ymd(d))}
+ const vals=days.map(d=>Math.round(sum(dayEntries(d)).cal)),mx=Math.max(state.goals.cal,...vals,1);
+ wk.innerHTML=days.map((d,i)=>`<div><i style="height:${vals[i]/mx*80}px;${vals[i]>state.goals.cal?'background:var(--f)':''}"></i>${new Date(d+"T12:00:00").toLocaleDateString(undefined,{weekday:"narrow"})}<br>${vals[i]}</div>`).join("");
+ const ws=state.weights.slice(-30);if(ws.length<2){wChart.innerHTML=`<div class="empty">${ws.length?ws[0].w+" logged. Log again to see a trend.":"Log your weight to see a trend."}</div>`;return}
+ const lo=Math.min(...ws.map(x=>x.w)),hi=Math.max(...ws.map(x=>x.w)),sp=hi-lo||1;
+ const pts=ws.map((x,i)=>(i/(ws.length-1)*300)+","+(70-(x.w-lo)/sp*60)).join(" ");
+ wChart.innerHTML=`<svg viewBox="0 0 300 80" width="100%" style="margin-top:8px"><polyline points="${pts}" fill="none" stroke="var(--ac)" stroke-width="3" stroke-linejoin="round"/></svg><div class="mu" style="font-size:13px">Latest ${ws[ws.length-1].w} · change ${(ws[ws.length-1].w-ws[0].w).toFixed(1)}</div>`}
+function saveGoals(){state.goals={cal:+gCal.value||2500,p:+gP.value||160,c:+gC.value||300,f:+gF.value||80};save();render();tab("diary")}
+function applySplit(p,c,f){const cal=+gCal.value||state.goals.cal;gP.value=Math.round(cal*p/4);gC.value=Math.round(cal*c/4);gF.value=Math.round(cal*f/9)}
+function exportData(){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:"application/json"}));a.download="fueltrack-backup.json";a.click()}
+function clearDay(){if(confirm("Clear all food entries for this day?")){state.entries=state.entries.filter(x=>x.date!==cur);save();render()}}
 
+/* ---------- Auth ---------- */
+function setErr(m){$("authErr").textContent=m||""}
+function toggleAuthMode(){FTMode=FTMode==="signin"?"signup":"signin";const su=FTMode==="signup";$("authTitle").textContent=su?"Create an account":"Sign in";$("authGo").textContent=su?"Sign up":"Sign in";$("authSwitch").textContent=su?"I already have an account":"Create an account";$("authName").style.display=su?"block":"none";setErr("")}
 async function submitAuth(){
-  if(!window.sb){setAuthError("Supabase is not configured. Check supabase-config.js.");return}
-  const email=$("authEmail").value.trim().toLowerCase(), password=$("authPw").value, btn=$("authGo");
-  if(!email||!password){setAuthError("Enter an email and password.");return}
-  if(FTAuthMode==="signup"&&password.length<6){setAuthError("Password must be at least 6 characters.");return}
-  btn.disabled=true;setAuthError("Working...");
-  try{
-    if(FTAuthMode==="signup"){
-      const display_name=$("authName").value.trim();
-      const {data,error}=await sb.auth.signUp({email,password,options:{data:{display_name}}});
-      if(error) throw error;
-      if(data.session){await finishLogin(data.user)}
-      else{setAuthError("Account created. Check your email to confirm it, then sign in.")}
-    }else{
-      const {data,error}=await sb.auth.signInWithPassword({email,password});
-      if(error) throw error;
-      await finishLogin(data.user);
-    }
-  }catch(err){setAuthError(err.message||"Authentication failed.")}
-  finally{btn.disabled=false}
-}
-
-function loadUserState(user){
-  storeKey="fueltrack_"+user.id;
-  let raw=localStorage.getItem(storeKey);
-  if(!raw){ // adopt pre-account data once, then remove it so other accounts don't inherit it
-    raw=localStorage.getItem("fueltrack");
-    if(raw){localStorage.setItem(storeKey,raw);localStorage.removeItem("fueltrack")}
-  }
-  let st=null;try{st=JSON.parse(raw||"null")}catch(e){}
-  state=Object.assign(defaultState(),st||{});
-}
-
-async function finishLogin(user){
-  FTUser=user;
-  loadUserState(user);
-  $("authScreen").style.display="none";
-  $("profileUser").textContent=user.email||"";
-  await loadCloudProfile(user);
-  renderProfileExtras();
-  render();tab("today");
-}
-
-async function loadCloudProfile(user){
-  const {data,error}=await sb.from("profiles").select("*").eq("id",user.id).maybeSingle();
-  if(error){console.warn("profiles:",error.message);return}
-  if(data&&data.display_name) $("profileUser").textContent=data.display_name+" · "+(user.email||"");
-}
-
-function showAuth(){
-  FTUser=null;storeKey=null;state=defaultState();
-  $("authScreen").style.display="block";
-  $("authEmail").value="";$("authPw").value="";$("authName").value="";
-  setAuthError("");render();
-}
+ if(!window.sb){setErr("Couldn't reach Supabase. Check your connection.");return}
+ const email=$("authEmail").value.trim().toLowerCase(),password=$("authPw").value,btn=$("authGo");
+ if(!email||!password){setErr("Enter an email and password.");return}
+ if(FTMode==="signup"&&password.length<6){setErr("Password must be at least 6 characters.");return}
+ btn.disabled=true;setErr("Working…");
+ try{if(FTMode==="signup"){const {data,error}=await sb.auth.signUp({email,password,options:{data:{display_name:$("authName").value.trim()}}});if(error)throw error;
+   if(data.session)await finishLogin(data.user);else setErr("Account created. Check your email to confirm it, then sign in.")}
+  else{const {data,error}=await sb.auth.signInWithPassword({email,password});if(error)throw error;await finishLogin(data.user)}}
+ catch(e){setErr(e.message||"Authentication failed.")}finally{btn.disabled=false}}
+function loadUser(u){storeKey="fueltrack_"+u.id;let raw=localStorage.getItem(storeKey);
+ if(!raw){raw=localStorage.getItem("fueltrack");if(raw){localStorage.setItem(storeKey,raw);localStorage.removeItem("fueltrack")}}
+ let st=null;try{st=JSON.parse(raw||"null")}catch(e){}state=Object.assign(defState(),st||{});
+ state.entries.forEach((x,i)=>{if(!x.id)x.id=Date.now()+i;if(!x.base){x.base=x.name;x.bcal=x.cal;x.bp=x.p;x.bc=x.c;x.bf=x.f}})}
+async function finishLogin(u){FTUser=u;loadUser(u);$("authScreen").style.display="none";$("who").textContent=u.email||"";
+ const {data,error}=await sb.from("profiles").select("display_name").eq("id",u.id).maybeSingle();
+ if(!error&&data&&data.display_name)$("who").textContent=data.display_name+" · "+(u.email||"");
+ cur=todayS();render();tab("diary")}
+function showAuth(){FTUser=null;storeKey=null;state=defState();$("authScreen").style.display="block";$("authEmail").value=$("authPw").value=$("authName").value="";setErr("");render()}
 async function signOut(){if(window.sb)await sb.auth.signOut();showAuth()}
-
-function showSetup(msg){$("authScreen").style.display="block";$("setupBox").style.display="block";$("signinBox").style.display="none";$("setupErr").textContent=msg||""}
-function connectSupabase(){
-  const url=$("sbUrl").value.trim().replace(/\/+$/,""), key=$("sbKey").value.trim();
-  if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(url)){$("setupErr").textContent="URL should look like https://abcdxyz.supabase.co";return}
-  if(key.startsWith("sb_secret_")||key.length<20){$("setupErr").textContent="Use the Publishable (or anon) key, not a secret key.";return}
-  localStorage.setItem("fueltrack_sb",JSON.stringify({url,key}));location.reload();
-}
-function resetConnection(){
-  if(!confirm("Disconnect from this Supabase project?"))return;
-  localStorage.removeItem("fueltrack_sb");
-  Promise.resolve(window.sb?sb.auth.signOut():0).catch(()=>{}).finally(()=>location.reload());
-}
 async function initAuth(){
-  if(!window.supabase){showSetup("Couldn't load the Supabase library. Check your connection.");return}
-  let cfg=null;try{cfg=JSON.parse(localStorage.getItem("fueltrack_sb")||"null")}catch(e){}
-  if(cfg&&cfg.url&&cfg.key){try{window.sb=window.supabase.createClient(cfg.url,cfg.key)}catch(e){console.error(e)}}
-  if(!window.sb){showSetup("");return}
-  $("setupBox").style.display="none";$("signinBox").style.display="block";
-  const {data,error}=await sb.auth.getSession();
-  if(error)console.error(error);
-  if(data&&data.session) await finishLogin(data.session.user); else showAuth();
-  sb.auth.onAuthStateChange(ev=>{if(ev==="SIGNED_OUT"&&FTUser)showAuth()});
-}
-
-function renderProfileExtras(){
-  if(!FTUser)return;
-  pgCal.value=state.goals.cal;pgP.value=state.goals.p;pgC.value=state.goals.c;pgF.value=state.goals.f;
-  let ps=[["Lean-bulk reference","25% protein · 55% carbs · 20% fat"],["Maintenance reference","30% protein · 45% carbs · 25% fat"]];
-  presetList.innerHTML=ps.map((p,i)=>`<div style="border:1px solid #e5e5e5;border-radius:15px;padding:13px;margin:9px 0"><b>${p[0]}</b><div class="muted" style="font-size:13px;margin:4px 0">${p[1]}</div><button class="secondary" onclick="setMacroReference(${i})">Apply macro ratio</button></div>`).join("")
-}
-function setMacroReference(i){let s=i===0?[.25,.55,.20]:[.30,.45,.25];let cal=+pgCal.value||state.goals.cal;state.goals.cal=cal;state.goals.p=Math.round(cal*s[0]/4);state.goals.c=Math.round(cal*s[1]/4);state.goals.f=Math.round(cal*s[2]/9);save();render();renderProfileExtras()}
-function saveProfileGoals(){state.goals={cal:+pgCal.value||2500,p:+pgP.value||160,c:+pgC.value||300,f:+pgF.value||80};save();render()}
-
-initAuth();
-</script>
-</body></html>
+ if(!window.supabase){$("authScreen").style.display="block";setErr("Couldn't load Supabase. Check your connection.");return}
+ try{window.sb=window.supabase.createClient(SB_URL,SB_KEY)}catch(e){setErr("Setup error.");return}
+ const {data}=await sb.auth.getSession();
+ if(data&&data.session)await finishLogin(data.session.user);else showAuth();
+ sb.auth.onAuthStateChange(ev=>{if(ev==="SIGNED_OUT"&&FTUser)showAuth()})}
+render();initAuth();
+</script></body></html>
