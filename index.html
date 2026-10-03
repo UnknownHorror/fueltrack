@@ -14,13 +14,13 @@
 @media(prefers-color-scheme:dark){:root{--bg:#0b1120;--card:#162033;--tx:#f1f5f9;--mu:#94a3b8;--ln:#26324a}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);padding-bottom:96px}
 h1,h2,h3,p{margin:0}.mu{color:var(--mu)}.hidden{display:none!important}
-header{background:var(--dk);color:#fff;padding:calc(env(safe-area-inset-top) + 12px) 16px 12px;position:sticky;top:0;z-index:3}
+header{background:linear-gradient(135deg,#0f172a,#134e4a);color:#fff;padding:calc(env(safe-area-inset-top) + 12px) 16px 12px;position:sticky;top:0;z-index:3}
 .hd{max-width:720px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:19px}.brand svg{width:32px;height:32px}
 .dnav{display:flex;align-items:center;gap:4px}.dnav button{background:#ffffff1f;color:#fff;padding:7px 12px}.dnav span{min-width:84px;text-align:center;font-weight:700;font-size:14px}
 main{max-width:720px;margin:auto;padding:14px}
 .card{background:var(--card);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:0 1px 6px #0000000f}
-button{border:0;border-radius:12px;padding:10px 14px;background:var(--ac);color:#fff;font-weight:700;font-size:14px;font-family:inherit}
+button{border:0;border-radius:12px;padding:10px 14px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;font-weight:700;font-size:14px;font-family:inherit}
 button.sec{background:var(--bg);color:var(--tx)}button.sm{padding:6px 11px;font-size:13px}
 input,select{width:100%;padding:12px;border:1px solid var(--ln);border-radius:12px;font-size:16px;background:var(--card);color:var(--tx);margin:5px 0;font-family:inherit}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{font-size:13px;color:var(--mu)}
@@ -35,6 +35,8 @@ input,select{width:100%;padding:12px;border:1px solid var(--ln);border-radius:12
 .tabs{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--ln);display:flex;padding:6px 8px calc(6px + env(safe-area-inset-bottom));z-index:4}
 .tabs button{flex:1;background:none;color:var(--mu);padding:6px 0;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px}.tabs button span{font-size:21px}.tabs button.on{color:var(--ac)}
 .empty{text-align:center;padding:20px;color:var(--mu)}.bars{display:flex;align-items:flex-end;gap:8px;height:130px;margin-top:10px}.bars div{flex:1;text-align:center;font-size:11px;color:var(--mu)}.bars i{display:block;background:var(--ac);border-radius:6px 6px 0 0;margin-bottom:4px}
+#diary>.card:first-child{background:linear-gradient(135deg,#0f172a,#115e59);color:#fff;border-radius:24px}#diary>.card:first-child .mu{color:#a7f3d0}#diary>.card:first-child .ring circle:first-child{stroke:#ffffff26}#diary>.card:first-child .eq div{border-color:#ffffff22}#diary>.card:first-child .bar{background:#ffffff26}
+#setup{position:fixed;inset:0;background:var(--bg);z-index:90;overflow:auto;padding:calc(env(safe-area-inset-top) + 20px) 16px 40px}.sw{max-width:520px;margin:auto}.plan{background:var(--bg);border-radius:16px;padding:14px;margin:12px 0;font-size:14px}.plan b{font-size:22px}.kv{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--ln);font-size:14px}
 details summary{font-weight:700;cursor:pointer}
 #authScreen{position:fixed;inset:0;background:var(--dk);color:#fff;z-index:100;padding:60px 22px;overflow:auto}
 .auth{max-width:430px;margin:auto}.auth .box{background:#fff;color:#0f172a;border-radius:22px;padding:18px;margin-top:24px}.auth input{background:#fff;color:#0f172a;border-color:#ddd}
@@ -53,6 +55,12 @@ details summary{font-weight:700;cursor:pointer}
 <button id="authSwitch" onclick="toggleAuthMode()" style="width:100%;background:none;color:#666">Create an account</button></div>
 </div></div>
 
+<div id="setup" class="hidden"><div class="sw"><svg width="52" height="52"><use href="#logo"/></svg><h1 style="margin:10px 0 4px">Let's set up your plan</h1><p class="mu" style="margin-bottom:14px">We use this to calculate your daily calories and macros. You can change it anytime in Profile.</p>
+<div class="card"><div class="grid"><label>Units<select id="suUnits" onchange="suCalc()"><option value="imperial">lb / inches</option><option value="metric">kg / cm</option></select></label><label>Sex<select id="suSex" onchange="suCalc()"><option value="m">Male</option><option value="f">Female</option></select></label></div>
+<div class="grid"><label>Age<input id="suAge" type="number" oninput="suCalc()"></label><label>Height (<span class="hu">in</span>)<input id="suH" type="number" step="0.1" oninput="suCalc()"></label><label>Weight (<span class="wu">lb</span>)<input id="suW" type="number" step="0.1" oninput="suCalc()"></label><label>Goal weight (<span class="wu">lb</span>)<input id="suGW" type="number" step="0.1" oninput="suCalc()"></label></div>
+<label>Activity level<select id="suAct" onchange="suCalc()"></select></label><label>Phase<select id="suPace" onchange="suCalc()"></select></label>
+<div class="plan" id="suOut"></div>
+<button style="width:100%;padding:13px" onclick="saveSetup()">Save &amp; start</button><button class="sec" style="width:100%;margin-top:8px" onclick="$('setup').classList.add('hidden')">Skip for now</button></div></div></div>
 <header><div class="hd"><div class="brand"><svg><use href="#logo"/></svg>FuelTrack</div>
 <div class="dnav"><button onclick="shiftDay(-1)">‹</button><span id="dayLbl">Today</span><button onclick="shiftDay(1)">›</button></div></div></header>
 <main>
@@ -70,6 +78,7 @@ details summary{font-weight:700;cursor:pointer}
 <input id="search" placeholder="Search foods…" oninput="renderFoods()">
 <div id="foodRes"></div>
 <button class="sec" style="width:100%;margin-top:8px" onclick="searchOnline()">🌐 Search online database</button><div id="online"></div></div>
+<div class="card"><h3>My meals</h3><div id="savedList"></div></div>
 <div class="card"><details><summary>⚡ Quick add calories</summary>
 <input id="qaName" placeholder="Label (optional)"><div class="grid"><input id="qaCal" type="number" placeholder="Calories"><input id="qaP" type="number" placeholder="Protein g"></div>
 <button onclick="quickAdd()">Add</button></details></div>
@@ -80,16 +89,19 @@ details summary{font-weight:700;cursor:pointer}
 
 <section id="progress" class="hidden">
 <div class="card"><h2>Last 7 days</h2><div class="bars" id="wk"></div></div>
+<div class="card"><h2>Weekly check-in</h2><div id="chk"></div></div>
+<div class="card"><h2>Goal</h2><div id="goalCard"></div></div>
 <div class="card"><h2>Weight</h2><div class="grid"><input id="wIn" type="number" step="0.1" placeholder="Today's weight"><button onclick="logWeight()" style="margin:5px 0">Log</button></div><div id="wChart"></div></div>
 </section>
 
 <section id="profile" class="hidden">
 <div class="card"><h2>Account</h2><p id="who" class="mu" style="margin:6px 0 12px"></p><button class="sec" onclick="signOut()">Sign out</button></div>
+<div class="card"><h2>Body &amp; goal</h2><div id="bodySum" style="margin:8px 0 12px"></div><button onclick="openSetup()">Update body &amp; recalculate</button></div>
 <div class="card"><h2>Daily targets</h2><div class="grid"><label>Calories<input id="gCal" type="number"></label><label>Protein g<input id="gP" type="number"></label><label>Carbs g<input id="gC" type="number"></label><label>Fat g<input id="gF" type="number"></label></div>
 <button onclick="saveGoals()">Save targets</button>
-<p class="mu" style="margin:14px 0 6px;font-size:13px">Macro split reference (uses the calories above)</p>
-<button class="sec sm" onclick="applySplit(.25,.55,.20)">Lean bulk 25/55/20</button> <button class="sec sm" onclick="applySplit(.30,.45,.25)">Maintain 30/45/25</button></div>
-<div class="card"><h2>Data</h2><p class="mu" style="margin:6px 0 12px;font-size:13px">Entries are stored on this device, per account.</p><button class="sec" onclick="exportData()">Export backup</button> <button class="sec" onclick="clearDay()">Clear this day</button></div>
+<p class="mu" style="margin:14px 0 6px;font-size:13px">Switch phase (recalculates from your body stats)</p>
+<button class="sec sm" onclick="setPhase(0)">Cut</button> <button class="sec sm" onclick="setPhase(1)">Maintain</button> <button class="sec sm" onclick="setPhase(2)">Lean bulk</button></div>
+<div class="card"><h2>Data</h2><p class="mu" style="margin:6px 0 12px;font-size:13px">Entries are stored on this device, per account and synced to the cloud.</p><p id="syncSt" class="mu" style="font-size:13px;margin-bottom:10px"></p><button class="sec" onclick="exportData()">Export backup</button> <button class="sec" onclick="clearDay()">Clear this day</button></div>
 </section>
 </main>
 <nav class="tabs"><button id="t_diary" class="on" onclick="tab('diary')"><span>📖</span>Diary</button><button id="t_add" onclick="tab('add')"><span>➕</span>Add</button><button id="t_progress" onclick="tab('progress')"><span>📈</span>Progress</button><button id="t_profile" onclick="tab('profile')"><span>👤</span>Profile</button></nav>
@@ -102,9 +114,14 @@ const ymd=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+Stri
 const todayS=()=>ymd(new Date());
 const SB_URL="https://dndbksrutrzjgqartxmd.supabase.co",SB_KEY="sb_publishable_9QBT90TVDDy9lPeZRTkSVg_cGBejrhk";
 const starter=[["Chicken breast, cooked (4 oz)",187,35,0,4],["White rice, cooked (1 cup)",205,4,45,0.4],["Egg, large",72,6,0.4,5],["Oatmeal, cooked (1 cup)",166,6,28,3.6],["Banana, medium",105,1.3,27,0.4],["Apple, medium",95,0.5,25,0.3],["Greek yogurt, plain (1 cup)",130,23,9,0],["Whole milk (1 cup)",149,8,12,8],["Peanut butter (2 tbsp)",190,7,7,16],["Whey protein (1 scoop)",120,24,3,2],["Ground beef 90% lean (4 oz)",200,26,0,10],["Salmon, cooked (4 oz)",233,25,0,14],["Pasta, cooked (1 cup)",221,8,43,1.3],["Whole wheat bread (2 slices)",200,8,36,3],["Avocado (1/2)",120,1.5,6,11],["Broccoli, cooked (1 cup)",55,4,11,0.6]];
-const defState=()=>({goals:{cal:2500,p:160,c:300,f:80},entries:[],custom:[],water:{},weights:[]});
+const defState=()=>({goals:{cal:2500,p:160,c:300,f:80},entries:[],custom:[],water:{},weights:[],saved:[],profile:null});
 let state=defState(),storeKey=null,cur=todayS(),FTUser=null,FTMode="signin",shown=[],onl=[];
-function save(){if(storeKey)localStorage.setItem(storeKey,JSON.stringify(state))}
+let pushT=null;
+function save(){if(!storeKey)return;state.ts=Date.now();localStorage.setItem(storeKey,JSON.stringify(state));clearTimeout(pushT);pushT=setTimeout(cloudPush,1500)}
+function setSync(t){const e=$("syncSt");if(e)e.textContent=t}
+async function cloudPush(){if(!FTUser||!window.sb)return;const {error}=await sb.from("user_state").upsert({user_id:FTUser.id,data:state,updated_at:new Date().toISOString()});setSync(error?"Cloud sync is off (run the sync SQL in Supabase).":"Cloud sync ✓ "+new Date().toLocaleTimeString())}
+async function cloudPull(){try{const {data,error}=await sb.from("user_state").select("data").eq("user_id",FTUser.id).maybeSingle();if(error){setSync("Cloud sync is off (run the sync SQL in Supabase).");return}
+ if(data&&data.data&&(data.data.ts||0)>(state.ts||0)){state=Object.assign(defState(),data.data);fixProfile();localStorage.setItem(storeKey,JSON.stringify(state));setSync("Cloud sync ✓")}else cloudPush()}catch(e){}}
 const dayEntries=d=>state.entries.filter(x=>x.date===d);
 const sum=es=>es.reduce((a,x)=>({cal:a.cal+x.cal,p:a.p+x.p,c:a.c+x.c,f:a.f+x.f}),{cal:0,p:0,c:0,f:0});
 function shiftDay(n){const d=new Date(cur+"T12:00:00");d.setDate(d.getDate()+n);cur=ymd(d);render()}
@@ -116,12 +133,12 @@ function render(){
  $("ringC").style.strokeDashoffset=351.9*(1-Math.min(1,t.cal/g.cal));$("ringC").style.stroke=rem<0?"var(--f)":"var(--ac)";
  $("macros").innerHTML=[["Protein",t.p,g.p,"--p"],["Carbs",t.c,g.c,"--c"],["Fat",t.f,g.f,"--f"]].map(m=>`<div class="r"><b>${m[0]}</b><span class="mu">${Math.round(m[1])} / ${m[2]} g</span></div><div class="bar"><i style="width:${Math.min(100,m[1]/m[2]*100)}%;background:var(${m[3]})"></i></div>`).join("");
  const w=state.water[cur]||0;$("drops").textContent=(w?"💧".repeat(Math.min(w,12))+" ":"")+w+" / 8 glasses";
- $("meals").innerHTML=["Breakfast","Lunch","Dinner","Snacks"].map(m=>{const es=dayEntries(cur).filter(x=>x.meal===m);return `<div class="mealh"><div><h3>${m}</h3><small class="mu">${Math.round(sum(es).cal)} cal</small></div><button class="sm" onclick="openAdd('${m}')">+ Add</button></div>`+es.map(x=>`<div class="fr"><div>${esc(x.name)}<small>${Math.round(x.cal)} cal · P ${Math.round(x.p)} · C ${Math.round(x.c)} · F ${Math.round(x.f)}</small></div><button class="sec sm" onclick="delEntry(${x.id})">✕</button></div>`).join("")}).join("");
+ $("meals").innerHTML=["Breakfast","Lunch","Dinner","Snacks"].map(m=>{const es=dayEntries(cur).filter(x=>x.meal===m);return `<div class="mealh"><div><h3>${m}</h3><small class="mu">${Math.round(sum(es).cal)} cal</small></div><div><button class="sec sm" onclick="saveMeal('${m}')">💾</button> <button class="sm" onclick="openAdd('${m}')">+ Add</button></div></div>`+es.map(x=>`<div class="fr"><div>${esc(x.name)}<small>${Math.round(x.cal)} cal · P ${Math.round(x.p)} · C ${Math.round(x.c)} · F ${Math.round(x.f)}</small></div><button class="sec sm" onclick="delEntry(${x.id})">✕</button></div>`).join("")}).join("");
 }
 function tab(id){["diary","add","progress","profile"].forEach(x=>{$(x).classList.toggle("hidden",x!==id);$("t_"+x).classList.toggle("on",x===id)});
- if(id==="profile"){gCal.value=state.goals.cal;gP.value=state.goals.p;gC.value=state.goals.c;gF.value=state.goals.f}
+ if(id==="profile"){bodySummary();gCal.value=state.goals.cal;gP.value=state.goals.p;gC.value=state.goals.c;gF.value=state.goals.f}
  if(id==="progress")renderProgress();window.scrollTo(0,0)}
-function openAdd(m){if(m)mealSel.value=m;search.value="";online.innerHTML="";tab("add");renderFoods()}
+function openAdd(m){if(m)mealSel.value=m;search.value="";online.innerHTML="";tab("add");renderFoods();renderSaved()}
 function recents(){const seen={},out=[];for(let i=state.entries.length-1;i>=0&&out.length<6;i--){const x=state.entries[i];if(!seen[x.base]){seen[x.base]=1;out.push([x.base,x.bcal,x.bp,x.bc,x.bf])}}return out}
 function renderFoods(){const q=search.value.toLowerCase();
  const all=(q?[]:recents()).concat(starter,state.custom.map(x=>[x.name,x.cal,x.p,x.c,x.f])),seen={};
@@ -139,7 +156,7 @@ async function searchOnline(){const q=search.value.trim();if(!q){online.innerHTM
 function delEntry(id){state.entries=state.entries.filter(x=>x.id!==id);save();render()}
 function water(n){state.water[cur]=Math.max(0,(state.water[cur]||0)+n);save();render()}
 function logWeight(){const v=+wIn.value;if(!v)return;state.weights=state.weights.filter(x=>x.date!==cur).concat({date:cur,w:v}).sort((a,b)=>a.date<b.date?-1:1);wIn.value="";save();renderProgress()}
-function renderProgress(){
+function renderProgress(){goalCard();weekCheck();
  const days=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push(ymd(d))}
  const vals=days.map(d=>Math.round(sum(dayEntries(d)).cal)),mx=Math.max(state.goals.cal,...vals,1);
  wk.innerHTML=days.map((d,i)=>`<div><i style="height:${vals[i]/mx*80}px;${vals[i]>state.goals.cal?'background:var(--f)':''}"></i>${new Date(d+"T12:00:00").toLocaleDateString(undefined,{weekday:"narrow"})}<br>${vals[i]}</div>`).join("");
@@ -151,6 +168,44 @@ function saveGoals(){state.goals={cal:+gCal.value||2500,p:+gP.value||160,c:+gC.v
 function applySplit(p,c,f){const cal=+gCal.value||state.goals.cal;gP.value=Math.round(cal*p/4);gC.value=Math.round(cal*c/4);gF.value=Math.round(cal*f/9)}
 function exportData(){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:"application/json"}));a.download="fueltrack-backup.json";a.click()}
 function clearDay(){if(confirm("Clear all food entries for this day?")){state.entries=state.entries.filter(x=>x.date!==cur);save();render()}}
+
+/* ---------- Plan / weight calc ---------- */
+const ACT=[["Sedentary (desk job, little exercise)",1.2],["Light (1–3 workouts/week)",1.375],["Moderate (3–5 workouts/week)",1.55],["Very active (6–7 workouts/week)",1.725],["Athlete (2×/day or physical job)",1.9]];
+const PACE=[["Cut (fat loss) — ~20% deficit",-.2,1.2],["Maintain — eat at TDEE",0,1],["Lean bulk — ~10% surplus",.1,1]];
+suAct.innerHTML=ACT.map((a,i)=>`<option value="${i}">${a[0]}</option>`).join("");suPace.innerHTML=PACE.map((a,i)=>`<option value="${i}">${a[0]}</option>`).join("");suAct.value=2;suPace.value=1;
+const toKg=(w,u)=>u==="metric"?w:w*0.45359,toCm=(h,u)=>u==="metric"?h:h*2.54;
+function calcPlan(p){const kg=toKg(p.w,p.units),cm=toCm(p.h,p.units),lb=kg*2.20462,ph=PACE[p.pace]||PACE[1];
+ const bmr=10*kg+6.25*cm-5*p.age+(p.sex==="m"?5:-161),tdee=bmr*ACT[p.act][1];
+ const cal=Math.round(Math.max(p.sex==="m"?1500:1200,tdee*(1+ph[1]))),pr=Math.round(lb*ph[2]),f=Math.round(cal*.25/9),c=Math.max(0,Math.round((cal-pr*4-f*9)/4));
+ return{bmr:Math.round(bmr),tdee:Math.round(tdee),cal,p:pr,c,f,bmi:kg/Math.pow(cm/100,2),wk:(cal-tdee)*7/3500}}
+function fixProfile(){const p=state.profile;if(p&&p.v!==2){p.pace=1;p.v=2}}
+function setPhase(i){if(!state.profile){openSetup();return}state.profile.pace=i;const r=calcPlan(state.profile);state.goals={cal:r.cal,p:r.p,c:r.c,f:r.f};save();render();bodySummary();gCal.value=r.cal;gP.value=r.p;gC.value=r.c;gF.value=r.f}
+function weekCheck(){const e=$("chk"),p=state.profile,ws=state.weights.filter(x=>x.date>=ymd(new Date(Date.now()-21*864e5)));
+ if(!p||ws.length<2){e.innerHTML='<div class="empty">Weigh in at least twice, a week or more apart (same time of day), to get advice.</div>';return}
+ const a=ws[0],b=ws[ws.length-1],days=(new Date(b.date)-new Date(a.date))/864e5;if(days<5){e.innerHTML='<div class="empty">Need about a week between weigh-ins.</div>';return}
+ const m=p.units==="metric",rate=(b.w-a.w)/days*7*(m?2.2046:1);let msg;
+ if(p.pace===0)msg=rate>-0.5?"Fat loss is slow. Consider trimming about 100–200 calories.":rate<-2?"You're losing quickly. Add about 100–200 calories to protect muscle and performance.":"On track.";
+ else if(p.pace===2)msg=rate<0.25?"Gain is slow. Add about 100–200 calories.":rate>1?"Gaining fast. Trim about 100–200 calories to limit fat gain.":"On track.";
+ else msg=rate>0.5?"Weight is creeping up; trim about 100–200 calories.":rate<-0.5?"Weight is dropping; add about 100–200 calories.":"On track.";
+ e.innerHTML=`<div class="kv"><span>Trend</span><b>${rate>0?"+":""}${(m?rate*.4536:rate).toFixed(1)} ${m?"kg":"lb"}/week</b></div><p style="margin-top:8px;font-size:14px">${msg}</p>`}
+function suRead(){return{units:suUnits.value,sex:suSex.value,age:+suAge.value,h:+suH.value,w:+suW.value,gw:+suGW.value,act:+suAct.value,pace:+suPace.value}}
+function suCalc(){const p=suRead(),m=p.units==="metric";document.querySelectorAll(".wu").forEach(e=>e.textContent=m?"kg":"lb");document.querySelectorAll(".hu").forEach(e=>e.textContent=m?"cm":"in");
+ if(!(p.age&&p.h&&p.w)){suOut.innerHTML='<span class="mu">Fill in your details to see your plan.</span>';return null}
+ const r=calcPlan(p);suOut.innerHTML=`<div class="mu">Daily target</div><b>${r.cal} cal</b><div class="kv"><span>Protein</span><b style="font-size:14px">${r.p} g</b></div><div class="kv"><span>Carbs</span><b style="font-size:14px">${r.c} g</b></div><div class="kv"><span>Fat</span><b style="font-size:14px">${r.f} g</b></div><div class="kv"><span>BMR · maintenance</span><b style="font-size:14px">${r.bmr} · ${r.tdee} cal</b></div><div class="kv"><span>Expected change</span><b style="font-size:14px">${r.wk>0.05?"+":""}${(m?r.wk*.4536:r.wk).toFixed(1)} ${m?"kg":"lb"}/wk</b></div><div class="kv"><span>BMI</span><b style="font-size:14px">${r.bmi.toFixed(1)}</b></div><small class="mu">Follows Michael Matthews / Legion-style guidelines (protein ≈1 g/lb, 20% cut, 10% lean bulk). Estimates only, not medical advice. Minimum ${p.sex==="m"?1500:1200} cal.</small>`;return r}
+function openSetup(){const p=state.profile;if(p){suUnits.value=p.units;suSex.value=p.sex;suAge.value=p.age;suH.value=p.h;suW.value=p.w;suGW.value=p.gw||"";suAct.value=p.act;suPace.value=p.pace}$("setup").classList.remove("hidden");suCalc()}
+function saveSetup(){const p=suRead(),r=suCalc();if(!r){alert("Enter your age, height and weight.");return}
+ p.v=2;state.profile=p;state.goals={cal:r.cal,p:r.p,c:r.c,f:r.f};state.weights=state.weights.filter(x=>x.date!==todayS()).concat({date:todayS(),w:p.w}).sort((a,b)=>a.date<b.date?-1:1);
+ save();$("setup").classList.add("hidden");render();tab("diary")}
+function bodySummary(){const p=state.profile;if(!p){bodySum.innerHTML='<span class="mu">Not set up yet.</span>';return}const r=calcPlan(p),u=p.units==="metric"?"kg":"lb";
+ bodySum.innerHTML=`<div class="kv"><span>Weight → goal</span><b>${p.w} → ${p.gw||"–"} ${u}</b></div><div class="kv"><span>Plan</span><b>${(PACE[p.pace]||PACE[1])[0].split(" — ")[0]}</b></div><div class="kv"><span>BMR</span><b>${r.bmr} cal</b></div><div class="kv"><span>Maintenance (TDEE)</span><b>${r.tdee} cal</b></div><div class="kv"><span>BMI</span><b>${r.bmi.toFixed(1)}</b></div>`}
+function goalCard(){const p=state.profile;if(!p){$("goalCard").innerHTML='<div class="empty">Set up your body &amp; goal in Profile to see this.</div>';return}
+ const u=p.units==="metric"?"kg":"lb",last=state.weights.length?state.weights[state.weights.length-1].w:p.w,bmi=toKg(last,p.units)/Math.pow(toCm(p.h,p.units)/100,2),pace=calcPlan(p).wk*(p.units==="metric"?.4536:1);
+ let eta="";if(p.gw&&Math.abs(pace)>0.1){const d=p.gw-last;eta=d*pace>0?`≈ ${Math.ceil(Math.abs(d/pace))} weeks to goal`:"Goal and plan point in different directions"}
+ $("goalCard").innerHTML=`<div class="kv"><span>Current</span><b>${last} ${u}</b></div><div class="kv"><span>Goal</span><b>${p.gw||"–"} ${u}</b></div><div class="kv"><span>To go</span><b>${p.gw?Math.abs(p.gw-last).toFixed(1)+" "+u:"–"}</b></div><div class="kv"><span>BMI</span><b>${bmi.toFixed(1)}</b></div>${eta?`<p class="mu" style="margin-top:8px;font-size:13px">${eta}</p>`:""}`}
+/* saved meals */
+function saveMeal(m){const es=dayEntries(cur).filter(x=>x.meal===m);if(!es.length){alert("Nothing logged in "+m+" yet.");return}const n=prompt("Name this meal:",m);if(!n)return;state.saved.push({name:n,items:es.map(x=>({name:x.base,cal:x.cal,p:x.p,c:x.c,f:x.f}))});save();alert("Saved! Find it under Add → My meals.")}
+function renderSaved(){const t=x=>x.items.reduce((a,i)=>a+i.cal,0);savedList.innerHTML=state.saved.map((x,i)=>`<div class="fr"><div><b>${esc(x.name)}</b><small>${x.items.length} items · ${Math.round(t(x))} cal</small></div><div><button class="sm" onclick="addSaved(${i})">Add</button> <button class="sec sm" onclick="state.saved.splice(${i},1);save();renderSaved()">✕</button></div></div>`).join("")||'<div class="empty">Tap 💾 on a meal in your diary to save it here.</div>'}
+function addSaved(i){state.saved[i].items.forEach((x,k)=>state.entries.push({id:Date.now()+k+Math.floor(Math.random()*1000),date:cur,meal:mealSel.value,name:x.name,base:x.name,bcal:x.cal,bp:x.p,bc:x.c,bf:x.f,cal:x.cal,p:x.p,c:x.c,f:x.f}));save();render();tab("diary")}
 
 /* ---------- Auth ---------- */
 function setErr(m){$("authErr").textContent=m||""}
@@ -167,12 +222,12 @@ async function submitAuth(){
  catch(e){setErr(e.message||"Authentication failed.")}finally{btn.disabled=false}}
 function loadUser(u){storeKey="fueltrack_"+u.id;let raw=localStorage.getItem(storeKey);
  if(!raw){raw=localStorage.getItem("fueltrack");if(raw){localStorage.setItem(storeKey,raw);localStorage.removeItem("fueltrack")}}
- let st=null;try{st=JSON.parse(raw||"null")}catch(e){}state=Object.assign(defState(),st||{});
+ let st=null;try{st=JSON.parse(raw||"null")}catch(e){}state=Object.assign(defState(),st||{});fixProfile();
  state.entries.forEach((x,i)=>{if(!x.id)x.id=Date.now()+i;if(!x.base){x.base=x.name;x.bcal=x.cal;x.bp=x.p;x.bc=x.c;x.bf=x.f}})}
 async function finishLogin(u){FTUser=u;loadUser(u);$("authScreen").style.display="none";$("who").textContent=u.email||"";
  const {data,error}=await sb.from("profiles").select("display_name").eq("id",u.id).maybeSingle();
  if(!error&&data&&data.display_name)$("who").textContent=data.display_name+" · "+(u.email||"");
- cur=todayS();render();tab("diary")}
+ await cloudPull();cur=todayS();render();tab("diary");if(!state.profile)openSetup()}
 function showAuth(){FTUser=null;storeKey=null;state=defState();$("authScreen").style.display="block";$("authEmail").value=$("authPw").value=$("authName").value="";setErr("");render()}
 async function signOut(){if(window.sb)await sb.auth.signOut();showAuth()}
 async function initAuth(){
